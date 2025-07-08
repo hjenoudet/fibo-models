@@ -19,13 +19,7 @@ Deep‑learning models are great teaching exercises and become essential for **n
 
 ## Repo Structure
 
-├── cnn/ # PyTorch CNN implementation
-
-├── rnn/ # PyTorch RNN w/ projection layer
-
-├── ols/ # OLS baseline in plain NumPy + scikit‑learn
-
-├── notebook.ipynb # Interactive comparison & plots
+├── scripts/ # PyTorch CNN implementation, # PyTorch RNN w/ projection layer, # OLS baseline in plain NumPy + scikit‑learn
 
 ├── requirements.txt # pip install -r requirements.txt
 
