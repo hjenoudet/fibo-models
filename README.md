@@ -8,8 +8,6 @@ This repo explores **three different approaches** to forecasting the Fibonacci s
 | **RNN + Projection Layer** | *PyTorch* | Scalar input first passes through a small fully‑connected layer (proj = 4) before a 1‑layer RNN (hidden = 10) | 1‑2 s |
 | **1‑D CNN** | *PyTorch* | Two Conv1d layers + global pooling learn the “add two numbers” rule in parallel | 1‑2 s |
 
-\*On a laptop CPU, training for ~2 000 epochs where applicable.
-
 ---
 
 ## Why include a plain OLS model?
