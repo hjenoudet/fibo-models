@@ -6,55 +6,64 @@ import numpy as np
 def predict_next_number(sequence):
     seq_array = np.array(sequence, dtype=np.float32)
 
+    # ── ONLY THIS CLASS IS DIFFERENT ──────────────────────────────
     class RNNPredictor(nn.Module):
-        def __init__(self):
+        def __init__(self, proj_dim: int = 4, hidden_dim: int = 10):
             super().__init__()
-            self.rnn = nn.RNN(input_size=1, hidden_size=10, num_layers=1, batch_first=True) # One Hidden Layer, 10 neurons as per the requirements on the homework.
-            self.fc = nn.Linear(10, 1)
+            self.pre = nn.Linear(1, proj_dim)                     # ⟨1⟩ NEW
+            self.rnn = nn.RNN(                                    # ⟨2⟩ change input_size
+                input_size  = proj_dim,
+                hidden_size = hidden_dim,
+                num_layers  = 1,
+                batch_first = True
+            )
+            self.fc  = nn.Linear(hidden_dim, 1)
 
         def forward(self, x, hidden):
-            out, hidden = self.rnn(x, hidden)  # RNN processing
+            x = self.pre(x)                                       # ⟨3⟩ NEW
+            out, hidden = self.rnn(x, hidden)
             out = self.fc(out[:, -1, :])
             return out, hidden
+    # ─────────────────────────────────────────────────────────────
 
     def create_sequences(data):
-        X = np.array(data).reshape(1, -1, 1) # Convert full sequence to input
-        Y = np.array(data[-1] + data[-2]).reshape(1, 1)  # Next Fibonacci number as target
-
+        X = np.array(data).reshape(1, -1, 1)                       # full sequence
+        Y = np.array(data[-1] + data[-2]).reshape(1, 1)            # next Fib
         return torch.tensor(X, dtype=torch.float32), torch.tensor(Y, dtype=torch.float32)
 
-    # Crafting training data using the full input sequence
     inputs, targets = create_sequences(seq_array)
 
-    # Initializing our RNN (low learning rate and Adam, as per the homework requirements)
-    model = RNNPredictor()
+    model     = RNNPredictor()
     criterion = nn.MSELoss()
     optimizer = optim.Adam(model.parameters(), lr=0.001)
 
-    # Training Loop
-    epochs = 30000
-    for epoch in range(epochs):
+    # Training loop (30 k epochs like before)
+    epochs = 30_000
+    for _ in range(epochs):
         optimizer.zero_grad()
-        hidden = torch.zeros(1, 1, 10)  # Initialize hidden state
-        output, _ = model(inputs, hidden)  # Forward pass
-        loss = criterion(output.squeeze(), targets.squeeze()) # Loss
-        loss.backward() # Backpropagation
-        optimizer.step() # Optimization
+        hidden = torch.zeros(1, 1, 10)
+        output, _ = model(inputs, hidden)
+        loss = criterion(output.squeeze(), targets.squeeze())
+        loss.backward()
+        optimizer.step()
 
-    # Predict the Next Number Using ONLY the last number of the sequence, as per the restrictions.
+    # One‑step forecast (unchanged)
     model.eval()
     with torch.no_grad():
-      input_tensor = torch.tensor([[sequence[-1]]], dtype=torch.float32).view(1, 1, 1) # Use only one word to predict the next few numbers
-      hidden = torch.zeros(1, 1, 10)  # Initialization of hidden state for prediction
-      prediction, _ = model(input_tensor, hidden)
+        input_tensor = torch.tensor([[sequence[-1]]],
+                                    dtype=torch.float32).view(1, 1, 1)
+        hidden = torch.zeros(1, 1, 10)
+        prediction, _ = model(input_tensor, hidden)
 
-    return round(prediction.item(), 0)  # Return single predicted number
+    return round(prediction.item(), 0)
 
+# ── driver (unchanged) ──────────────────────────────────────────
 if __name__ == "__main__":
-    training_sequence = np.array([1, 1, 2, 3, 5, 8, 13, 21], dtype=np.float32)  # We use the first 8 numbers of the Fibonacci sequence for training our RNN
+    training_sequence = np.array([1, 1, 2, 3, 5, 8, 13, 21], dtype=np.float32)
     predicted_fibonacci = np.array([])
-    for i in range(1,6):
-      next_fib = predict_next_number(training_sequence)
-      print(f"Predicted next Fibonacci number ({8+i}):", next_fib) # We print the RNN's prediction, which outputs one number, as per the restrictions
-      training_sequence = np.append(training_sequence, next_fib) # We add the prediction at the end of our training sequence, and use that new training sequence for the next prediction
-      predicted_fibonacci = np.append(predicted_fibonacci, next_fib) # we keep the predicted values separated for further model accuracy analysis.
+
+    for i in range(1, 6):
+        next_fib = predict_next_number(training_sequence)
+        print(f"Predicted next Fibonacci number ({8 + i}):", next_fib)
+        training_sequence = np.append(training_sequence, next_fib)
+        predicted_fibonacci = np.append(predicted_fibonacci, next_fib)
