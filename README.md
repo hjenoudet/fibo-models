@@ -5,8 +5,8 @@ This repo explores **three different approaches** to forecasting the Fibonacci s
 | Model | Library | Key Idea | Typical Training Time* |
 |-------|---------|----------|-------------------------|
 | **Ordinary Least‑Squares (OLS)** | *scikit‑learn* | Classic linear regression on `[Fₜ, Fₜ₋₁] → Fₜ₊₁` | **\< 1 ms** |
-| **RNN + Projection Layer** | *PyTorch* | Scalar input first passes through a small fully‑connected layer (proj = 4) before a 1‑layer RNN (hidden = 10) | 1‑2 s |
-| **1‑D CNN** | *PyTorch* | Two Conv1d layers + global pooling learn the “add two numbers” rule in parallel | 1‑2 s |
+| **RNN + Projection Layer** | *PyTorch* | Scalar input first passes through a small fully‑connected layer (proj = 4) before a 1‑layer RNN (hidden = 10) | ~ 34 s |
+| **1‑D CNN** | *PyTorch* | Two Conv1d layers + global pooling learn the “add two numbers” rule in parallel | ~176 s |
 
 ---
 
