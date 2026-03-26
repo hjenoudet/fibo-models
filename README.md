@@ -1,5 +1,8 @@
 # Fibonacci Sequence Forecasting: A Comparative Study of OLS, RNN, and CNN
 
+[![Python](https://img.shields.io/badge/Language-Python-3776AB?logo=python&logoColor=white)](https://www.python.org/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+
 ## Executive Summary
 This repository presents a comparative analysis of three distinct mathematical and machine learning approaches for forecasting the Fibonacci sequence. By evaluating a classical **Ordinary Least-Squares (OLS)** regression against deep learning architectures—specifically a **Recurrent Neural Network (RNN)** and a **1D Convolutional Neural Network (CNN)**—this project highlights the strengths and limitations of various modeling paradigms when applied to deterministic linear recurrences.
 
